@@ -123,7 +123,38 @@ LEFT JOIN sc sc2 ON sc2.SNO = student1.SNO AND sc2.CNO = '02'
 
 13、查询和"01"号的同学学习的课程完全相同的其他同学的信息
 
+```sql
+SELECT * FROM student
+LEFT JOIN sc ON student.SNO = sc.SNO
+WHERE sc.CNO IN (SELECT  sc.CNO FROM sc WHERE sc.SNO = 01)
+GROUP BY sc.SNO
+HAVING COUNT(sc.CNO) = (SELECT COUNT(*) FROM sc WHERE sc.SNO = 01)
+
+SELECT * FROM student WHERE SNO IN (
+SELECT student.SNO FROM student
+LEFT JOIN sc ON student.SNO = sc.SNO
+WHERE sc.CNO IN (SELECT  sc.CNO FROM sc WHERE sc.SNO = 01)
+GROUP BY sc.SNO
+HAVING COUNT(sc.CNO) = (SELECT COUNT(*) FROM sc WHERE sc.SNO = 01)
+)
+```
+
+
+
 14、查询没学过"张三"老师讲授的任一门课程的学生姓名
+
+```sql
+SELECT student.SNAME FROM student WHERE student.SNO NOT IN
+(
+SELECT distinct student.SNO FROM student
+INNER JOIN sc ON student.SNO = sc.SNO
+INNER JOIN course ON sc.CNO = course.CNO
+INNER JOIN teacher ON course.TNO = teacher.TNO
+WHERE teacher.TNAME = '张三'
+)
+```
+
+
 
 15、查询两门及其以上不及格课程的同学的学号，姓名及其平均成绩
 
