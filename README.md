@@ -119,7 +119,30 @@ LEFT JOIN sc sc2 ON sc2.SNO = student1.SNO AND sc2.CNO = '02'
 
 11、查询没有学全所有课程的同学的信息
 
+```sql
+select student.*
+from student, sc where student.SNO = sc.SNO
+group by student.SNO
+having count(sc.CNO) < (select count(*) from course)
+```
+
+
+
 12、查询至少有一门课与学号为"01"的同学所学相同的同学的信息
+
+```sql
+select * from student where SNO in (
+    select distinct student.SNO
+    from student, sc
+    where student.SNO = sc.SNO
+    and sc.SNO <> 01
+    and sc.CNO in (
+        select CNO from sc where sc.SNO = 01
+        )
+    )
+```
+
+
 
 13、查询和"01"号的同学学习的课程完全相同的其他同学的信息
 
@@ -220,7 +243,25 @@ ORDER BY a.CNO, a.SCORE desc
 
 20、查询学生的总成绩并进行排名
 
+```sql
+select sc.SNO
+from sc
+group by SNO
+order by sum(sc.SCORE) desc 
+```
+
+
+
 21、查询不同老师所教不同课程平均分从高到低显示
+
+```sql
+select course.CNAME, AVG(sc.SCORE)
+from course, sc where course.CNO = sc.CNO
+group by sc.CNO
+order by avg(sc.SCORE) desc 
+```
+
+
 
 22、查询所有课程的成绩第2名到第3名的学生信息及该课程成绩
 
