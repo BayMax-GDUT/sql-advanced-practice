@@ -158,14 +158,65 @@ WHERE teacher.TNAME = '张三'
 
 15、查询两门及其以上不及格课程的同学的学号，姓名及其平均成绩
 
+```sql
+SELECT student.SNO, student.SNAME, AVG(sc.SCORE) FROM student
+INNER JOIN sc ON student.SNO = sc.SNO
+GROUP BY sc.SNO
+HAVING SUM(case when sc.SCORE >= 60 then 0 ELSE 1 END) >= 2
+```
+
+
+
 16、检索"01"课程分数小于60，按分数降序排列的学生信息
 
+```sql
+SELECT student.* FROM student
+INNER JOIN sc ON student.SNO = sc.SNO
+WHERE sc.CNO = '01' AND sc.SCORE < 60
+ORDER BY sc.SCORE desc
+```
+
+
+
 17、按平均成绩从高到低显示所有学生的所有课程的成绩以及平均成绩
+
+```sql
+SELECT SNO, GROUP_CONCAT(CNO), GROUP_CONCAT(SCORE), AVG(SCORE)
+FROM sc
+GROUP BY SNO
+ORDER BY AVG(SCORE) desc
+```
+
+
 
 18、查询各科成绩最高分、最低分和平均分：以如下形式显示：课程ID，课程name，最高分，最低分，平
 均分，及格率，中等率，优良率，优秀率（及格为>=60，中等为：70-80，优良为：80-90，优秀为：=90）
 
+```sql
+#一开始直接在count里进行运算，好像是不起作用的
+SELECT course.CNO AS 课程id, course.CNAME AS 课程名称, 
+MAX(sc.SCORE) AS 最高分, 
+MIN(sc.SCORE) AS 最低分,
+AVG(sc.SCORE) AS 平均分, 
+SUM(case when sc.SCORE >= 60 then 1 ELSE 0 END) / COUNT(sc.SCORE) AS 及格率 ,
+SUM(case when sc.SCORE >= 70 AND sc.SCORE < 80 then 1 ELSE 0 END) / COUNT(sc.SCORE) AS 中等率,
+SUM(case when sc.SCORE >= 80 AND sc.SCORE < 90 then 1 ELSE 0 END) / COUNT(sc.SCORE) AS 优良率,
+SUM(case when sc.SCORE >= 90 then 1 ELSE 0 END) / COUNT(sc.SCORE) AS 优秀率
+FROM course, sc WHERE course.CNO = sc.CNO
+GROUP BY sc.CNO
+```
+
+
+
 19、按各科成绩进行排序，并显示排名
+
+```sql
+SELECT student.SNO, a.CNO, a.SCORE, (SELECT COUNT(*) + 1 FROM sc WHERE sc.SCORE > a.SCORE AND sc.CNO = a.CNO) rank
+FROM student, sc a WHERE student.SNO = a.SNO
+ORDER BY a.CNO, a.SCORE desc
+```
+
+
 
 20、查询学生的总成绩并进行排名
 
