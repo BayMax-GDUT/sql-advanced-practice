@@ -319,7 +319,7 @@ order by s.CNO, s.SCORE desc
 26、查询每门课程被选修的学生数
 
 ```sql
-SELECT sc.CNO, COUNT(sc.CNO) FROM sc
+SELECT sc.CNO, COUNT(sc.SNO) FROM sc
 RIGHT JOIN course ON sc.CNO = course.CNO
 GROUP BY sc.CNO
 ```
