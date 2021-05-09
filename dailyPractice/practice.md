@@ -1,3 +1,130 @@
+0503
+
+```sql
+#1、查询"01"课程比"02"课程成绩高的学生的信息及课程分数
+
+select student.*, sc1.score as '01', sc2.score as '02' from student
+join sc sc1 on student.SNO = sc1.SNO and sc1.CNO = '01'
+join sc sc2 on student.SNO = sc2.SNO and sc2.CNO = '02'
+where sc1.SCORE > sc2.SCORE
+
+#2、查询"01"课程比"02"课程成绩低的学生的信息及课程分数
+
+select student.*, sc1.score as '01', sc2.score as '02' from student
+join sc sc1 on student.SNO = sc1.SNO and sc1.CNO = '01'
+join sc sc2 on student.SNO = sc2.SNO and sc2.CNO = '02'
+where sc1.SCORE < sc2.SCORE
+
+#3、查询平均成绩大于等于60分的同学的学生编号和学生姓名和平均成绩
+
+select student.SNO, student.SNAME, AVG(s.score)
+from student
+join sc s on student.SNO = s.SNO
+group by student.SNO
+having avg(s.SCORE) >= 60
+
+#4、查询平均成绩小于60分的同学的学生编号和学生姓名和平均成绩
+
+select student.SNO, student.SNAME, AVG(s.score)
+from student
+join sc s on student.SNO = s.SNO
+group by student.SNO
+having avg(s.SCORE) < 60
+
+#5、查询所有同学的学生编号、学生姓名、选课总数、所有课程的总成绩
+
+select student.SNO, student.SNAME, count(sc.CNO), sum(sc.score) from student
+join sc on student.SNO = sc.SNO
+group by student.SNO
+```
+
+
+
+0504
+
+```sql
+#6、查询"李"姓老师的数量
+
+select count(*) from teacher where TNAME like '李%'
+
+#7、查询学过"张三"老师授课的同学的信息
+
+select distinct * from student
+join sc s on student.SNO = s.SNO
+join course c on s.CNO = c.CNO
+join teacher t on c.TNO = t.TNO
+where t.TNAME = '张三'
+
+#8、查询没学过"张三"老师授课的同学的信息
+
+select student1.SNO from student student1 where student1.SNO not in
+(select distinct student2.SNO from student student2
+join sc s on student2.SNO = s.SNO
+join course c on s.CNO = c.CNO
+join teacher t on c.TNO = t.TNO
+where t.TNAME = '张三')
+
+#9、查询学过编号为"01"并且也学过编号为"02"的课程的同学的信息
+
+select * from student
+join sc sc1 on student.SNO = sc1.SNO and sc1.CNO = '01'
+join sc sc2 on student.SNO = sc2.SNO and sc2.CNO = '02'
+
+#10、查询学过编号为"01"但是没有学过编号为"02"的课程的同学的信息
+
+select * from student student1
+join sc sc1 on student1.SNO = sc1.SNO and sc1.CNO = '01'
+where student1.SNO not in
+(select SNO from student student2
+join sc sc2 on student2.SNO = sc2.SNO and sc2.CNO = '02'
+    )
+```
+
+
+
+0505
+
+```sql
+#11、查询没有学全所有课程的同学的信息
+
+select student.* from student
+join sc s on student.SNO = s.SNO
+group by s.SNO
+having count(s.CNO) < (select count(1) from course)
+
+#12、查询至少有一门课与学号为"01"的同学所学相同的同学的信息
+
+select distinct student.* from student
+join sc sc2 on student.SNO = sc2.SNO and sc2.SNO <> '01'
+where sc2.CNO in
+(select sc1.CNO from sc sc1 where sc1.SNO = '01')
+
+#13、查询和"01"号的同学学习的课程完全相同的其他同学的信息
+
+select student.* from student
+join sc on sc.SNO = student.SNO and sc.SNO <> '01' and sc.CNO in (select sc2.CNO from sc sc2 where sc2.SNO = '01')
+group by sc.SNO
+having count(sc.CNO) = (select count(1) from sc sc1 where sc1.SNO = '01')
+
+#14、查询没学过"张三"老师讲授的任一门课程的学生姓名
+
+select student1.SNAME from student student1
+where student1.SNO not in
+(select distinct student.SNO from student
+join sc s on student.SNO = s.SNO
+join course c on s.CNO = c.CNO
+join teacher t on c.TNO = t.TNO
+where t.TNAME = '张三')
+
+#15、查询两门及其以上不及格课程的同学的学号，姓名及其平均成绩
+
+select student.SNO, student.SNAME, avg(s.SCORE)
+from student
+join sc s on student.SNO = s.SNO
+group by s.SNO
+having sum(case when s.SCORE >= 60 then 0 else 1 end) >= 2
+```
+
 
 
 0506
@@ -131,6 +258,45 @@ select *, count(1)
 from student
 group by SNAME
 having count(1) > 1
+```
+
+
+
+0509
+
+```sql
+#31、查询1990年出生的学生名单
+
+select student.* from student where date_format(student.SAGE, '%Y') = '1990'
+
+#32、查询每门课程的平均成绩，结果按平均成绩降序排列，平均成绩相同时，按课程编号升序排列
+
+select sc.CNO, avg(sc.SCORE)
+from sc
+group by sc.CNO
+order by avg(sc.SCORE) desc, sc.CNO
+
+#33、查询平均成绩大于等于85的所有学生的学号、姓名和平均成绩
+
+select student.SNO. student.SNAME, avg(sc.SCORE)
+from student
+join sc on student.SNO = sc.SNO
+group by sc.SNO
+having avg(sc.SCORE) >= 85
+
+#34、查询课程名称为"数学"，且分数低于60的学生姓名和分数
+
+select student.SNAME, sc.SCORE
+from student
+join sc on student.SNO = sc.SNO and sc.SCORE < 60
+join course on sc.CNO = course.CNO and course.CNAME = '数学'
+
+#35、查询所有学生的课程及分数情况
+
+select student.SNAME, course.CNAME, sc.SCORE
+from student
+join sc on student.SNO = sc.SNO
+join course on sc.CNO = course.CNO
 ```
 
 
