@@ -301,3 +301,48 @@ join course on sc.CNO = course.CNO
 
 
 
+0510
+
+```sql
+#36、查询任何一门课程成绩在70分以上的姓名、课程名称和分数
+
+select student.SNAME, course.CNAME, sc.SCORE
+from student
+join sc on student.SNO = sc.SNO
+join course on sc.CNO = course.CNO
+where sc.SCORE >= 70
+
+#37、查询不及格的课程
+
+select student.SNAME, course.CNAME, sc.SCORE
+from student
+join sc on student.SNO = sc.SNO
+join course on sc.CNO = course.CNO
+where sc.SCORE < 60
+
+#38、查询课程编号为01且课程成绩在80分以上的学生的学号和姓名
+
+select student.SNO, student.SNAME
+from student
+join sc on student.SNO = sc.SNO
+where sc.CNO = 01 and sc.SCORE >= 80
+
+#39、求每门课程的学生人数
+
+select sc.CNO, count(sc.SNO)
+from sc
+group by sc.CNO
+
+#40、查询选修"张三"老师所授课程的学生中，成绩最高的学生信息及其成绩
+
+select student.*, sc.SCORE
+from student
+join sc on student.SNO = sc.SNO
+join course on sc.CNO = course.CNO
+join teacher on course.TNO = teacher.TNO
+where teacher.TNAME = '张三'
+order by sc.SCORE desc
+limit 1
+
+```
+
