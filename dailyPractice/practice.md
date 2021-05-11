@@ -346,3 +346,45 @@ limit 1
 
 ```
 
+
+
+0511
+
+```sql
+#41、查询不同课程成绩相同的学生的学生编号、课程编号、学生成绩
+
+select sc.SNO, sc.CNO, sc.SCORE
+from sc sc1
+join sc sc2 on sc1.SNO = sc2.SNO and sc1.CNO <> sc2.CNO and sc1.SCORE = sc2.SCORE
+
+#42、查询每门功成绩最好的前两名
+
+select sc.SNO, sc.CNO
+from sc
+where (select count(1) + 1 from sc sc1 where sc1.SCORE > sc.SCORE and sc.CNO = sc1.CNO) in (1, 2)
+
+#43、统计每门课程的学生选修人数（超过5人的课程才统计）。要求输出课程号和选修人数，查询结果按人数降序排列，若人数相同，按课程号升序排列
+
+select sc.CNO, count(sc.SNO)
+from sc
+group by sc.CNO
+having count(sc.SNO) > 5
+order by count(sc.SNO) desc, sc.CNO
+
+#44、检索至少选修两门课程的学生学号
+
+select sc.SNO
+from sc
+group by sc.SNO
+having count(sc.CNO) > 1
+
+#45、查询选修了全部课程的学生信息
+
+select student.*
+from student
+join sc on student.SNO = sc.SNO
+group by sc.SNO
+having count(sc.CNO) = (select count(1) from course)
+
+```
+

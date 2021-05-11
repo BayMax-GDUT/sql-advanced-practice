@@ -489,6 +489,7 @@ ON sc1.SNO = sc2.SNO AND sc1.CNO <> sc2.CNO AND sc1.SCORE = sc2.SCORE
 *42、查询每门功成绩最好的前两名
 
 ```sql
+#解法1
 (SELECT sc.`*`
 FROM sc
 WHERE sc.CNO = '01'
@@ -506,6 +507,11 @@ FROM sc
 WHERE sc.CNO = '03'
 ORDER BY sc.SCORE DESC
 LIMIT 2)
+
+#解法2
+select sc.SNO, sc.CNO
+from sc
+where (select count(1) + 1 from sc sc1 where sc1.SCORE > sc.SCORE and sc.CNO = sc1.CNO) in (1, 2)
 ```
 
 
