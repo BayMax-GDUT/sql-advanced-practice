@@ -388,3 +388,61 @@ having count(sc.CNO) = (select count(1) from course)
 
 ```
 
+
+
+0512
+
+```sql
+#46、查询各学生的年龄
+
+select student.SNO, student.SNAME, date_format(now(), "%Y") - date_format(SAGE, "%Y")
+from student
+
+#47、查询本周过生日的学生
+
+
+
+#48、查询下周过生日的学生
+
+
+
+#49、查询本月过生日的学生
+
+select student.* 
+from student
+where date_format(SAGE, "%m") = date_format(now(), "%m")
+
+#50、查询下月过生日的学生
+
+select student.* 
+from student
+where date_format(SAGE, "%m") = date_format(now(), "%m") + 1
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
