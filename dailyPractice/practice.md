@@ -422,6 +422,61 @@ where date_format(SAGE, "%m") = date_format(now(), "%m") + 1
 
 
 
+0513
+
+```sql
+#1、查询"01"课程比"02"课程成绩高的学生的信息及课程分数
+
+select student.*,sc1.SCORE, sc2.SCORE
+from student,sc sc1, sc sc2
+where student.SNO = sc1.SNO and sc1.CNO = 01
+and student.SNO = sc2.SNO and sc2.CNO = 02
+and sc1.SCORE > sc2.SCORE
+
+#2、查询"01"课程比"02"课程成绩低的学生的信息及课程分数
+
+select student.*, sc1.SCORE, sc2.SCORE
+from student, sc sc1, sc sc2
+where student.SNO = sc1.SNO and sc1.CNO = 01
+and student.SNO = sc2.SNO and sc2.CNO = 02
+and sc1.SCORE < sc2.SCORE
+
+#3、查询平均成绩大于等于60分的同学的学生编号和学生姓名和平均成绩
+
+select student.SNO, student.SNAME, avg(sc.SCORE)
+from student, sc
+where student.SNO = sc.SNO
+group by student.SNO
+having avg(sc.SCORE) >= 60
+
+#4、查询平均成绩小于60分的同学的学生编号和学生姓名和平均成绩
+
+select student.SNO, student.SNAME, avg(sc.SCORE)
+from student, sc
+where student.SNO = sc.SNO
+group by student.SNO
+having avg(sc.SCORE) < 60
+
+#5、查询所有同学的学生编号、学生姓名、选课总数、所有课程的总成绩
+
+select student.SNO, student.SNAME, count(sc.CNO), sum(sc.SCORE)
+from student, sc
+where student.SNO = sc.SNO
+group by student.SNO
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
