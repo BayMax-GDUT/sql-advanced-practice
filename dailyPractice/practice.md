@@ -467,6 +467,42 @@ group by student.SNO
 
 
 
+0514
+
+```sql
+#6、查询"李"姓老师的数量
+
+select count(1) from teacher where TNAME like '李%'
+
+#7、查询学过"张三"老师授课的同学的信息
+
+select distinct student.*
+from student, sc, course, teacher
+where student.SNO = sc.SNO and sc.CNO = course.CNO and course.TNO = teacher.TNO
+and teacher.TNAME = '张三'
+
+#8、查询没学过"张三"老师授课的同学的信息
+
+select student.* from student where student.SNO not in
+(select distinct student.SNO
+from student, sc, course, teacher
+where student.SNO = sc.SNO and sc.CNO = course.CNO and course.TNO = teacher.TNO
+and teacher.TNAME = '张三')
+
+#9、查询学过编号为"01"并且也学过编号为"02"的课程的同学的信息
+
+select student.*
+from student, sc sc1, sc sc2
+where student.SNO = sc1.SNO and student.SNO = sc2.SNO and sc1.CNO = 01 and sc2.CNO = 02
+
+#10、查询学过编号为"01"但是没有学过编号为"02"的课程的同学的信息
+
+select student.*
+from student, sc sc1, sc sc2
+where student.SNO = sc1.SNO and student.SNO <> sc2.SNO and sc1.CNO = 01 and sc2.CNO = 02
+
+```
+
 
 
 

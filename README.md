@@ -5,8 +5,8 @@ SQL进阶练习题
 
 ```sql
 SELECT student.*, sc1.SCORE AS 01score, sc2.SCORE AS 02score FROM student
-LEFT JOIN sc sc1 ON sc1.SNO = student.SNO
-LEFT JOIN sc sc2 ON sc2.SNO = student.SNO
+JOIN sc sc1 ON sc1.SNO = student.SNO
+JOIN sc sc2 ON sc2.SNO = student.SNO
 WHERE sc1.CNO = '01'
 AND sc2.CNO = '02'
 AND sc1.SCORE > sc2.SCORE
@@ -16,8 +16,8 @@ AND sc1.SCORE > sc2.SCORE
 
 ```sql
 SELECT student.*, sc1.SCORE AS 01score, sc2.SCORE AS 02score FROM student
-LEFT JOIN sc sc1 ON sc1.SNO = student.SNO
-LEFT JOIN sc sc2 ON sc2.SNO = student.SNO
+JOIN sc sc1 ON sc1.SNO = student.SNO
+JOIN sc sc2 ON sc2.SNO = student.SNO
 WHERE sc1.CNO = '01'
 AND sc2.CNO = '02'
 AND sc1.SCORE < sc2.SCORE
@@ -30,7 +30,7 @@ GROUP BY student.SNO
 
 ```sql
 SELECT student.SNO, student.SNAME, AVG(sc.SCORE) AS avg_score
-FROM student LEFT JOIN sc ON student.SNO = sc.SNO
+FROM student JOIN sc ON student.SNO = sc.SNO
 GROUP BY student.SNO
 having avg_score >= 60 
 ```
@@ -41,7 +41,7 @@ having avg_score >= 60
 
 ```sql
 SELECT student.SNO, student.SNAME, AVG(sc.SCORE) AS avg_score
-FROM student LEFT JOIN sc ON student.SNO = sc.SNO
+FROM student JOIN sc ON student.SNO = sc.SNO
 GROUP BY student.SNO
 having avg_score < 60 
 ```
@@ -52,7 +52,7 @@ having avg_score < 60
 
 ```sql
 SELECT s.SNO, s.SNAME, COUNT(sc.SCORE), SUM(sc.SCORE) FROM student s
-LEFT JOIN sc ON s.SNO = sc.SNO
+JOIN sc ON s.SNO = sc.SNO
 GROUP BY s.SNO
 ```
 
@@ -71,9 +71,9 @@ WHERE teacher.TNAME LIKE '李%'
 
 ```sql
 SELECT distinct student.* FROM student
-LEFT JOIN sc ON student.SNO = sc.SNO
-LEFT JOIN course ON sc.CNO = course.CNO
-LEFT JOIN teacher ON course.TNO = teacher.TNO
+JOIN sc ON student.SNO = sc.SNO
+JOIN course ON sc.CNO = course.CNO
+JOIN teacher ON course.TNO = teacher.TNO
 WHERE teacher.TNAME = '张三'
 ```
 
@@ -84,9 +84,9 @@ WHERE teacher.TNAME = '张三'
 ```sql
 SELECT * FROM student s1 WHERE s1.SNO NOT IN 
 (SELECT distinct student.SNO FROM student
-LEFT JOIN sc ON student.SNO = sc.SNO
-LEFT JOIN course ON sc.CNO = course.CNO
-LEFT JOIN teacher ON course.TNO = teacher.TNO
+JOIN sc ON student.SNO = sc.SNO
+JOIN course ON sc.CNO = course.CNO
+JOIN teacher ON course.TNO = teacher.TNO
 WHERE teacher.TNAME = '张三')
 ```
 
@@ -96,8 +96,8 @@ WHERE teacher.TNAME = '张三')
 
 ```sql
 SELECT student.`*` FROM student
-LEFT JOIN sc sc1 ON student.SNO = sc1.SNO
-LEFT JOIN sc sc2 ON student.SNO = sc2.SNO
+JOIN sc sc1 ON student.SNO = sc1.SNO
+JOIN sc sc2 ON student.SNO = sc2.SNO
 WHERE sc1.CNO = '01' and sc2.CNO = '02'
 ```
 
@@ -107,10 +107,10 @@ WHERE sc1.CNO = '01' and sc2.CNO = '02'
 
 ```sql
 SELECT distinct student2.`*` FROM student student2
-LEFT JOIN sc sc1 ON student2.SNO = sc1.SNO
+JOIN sc sc1 ON student2.SNO = sc1.SNO
 WHERE sc1.CNO = '01' AND student2.SNO NOT IN (
 SELECT student1.SNO FROM student student1
-LEFT JOIN sc sc2 ON sc2.SNO = student1.SNO AND sc2.CNO = '02'
+JOIN sc sc2 ON sc2.SNO = student1.SNO AND sc2.CNO = '02'
 )
 ```
 
@@ -150,14 +150,14 @@ select * from student where SNO in (
 # 条件2：学号不等于01号
 # 条件3：上过的课数量等于01号同学上过的课数量
 SELECT * FROM student
-LEFT JOIN sc ON student.SNO = sc.SNO
+JOIN sc ON student.SNO = sc.SNO
 WHERE sc.CNO IN (SELECT  sc.CNO FROM sc WHERE sc.SNO = 01)
 GROUP BY sc.SNO
 HAVING COUNT(sc.CNO) = (SELECT COUNT(*) FROM sc WHERE sc.SNO = 01)
 
 SELECT * FROM student WHERE SNO IN (
 SELECT student.SNO FROM student
-LEFT JOIN sc ON student.SNO = sc.SNO
+JOIN sc ON student.SNO = sc.SNO
 WHERE sc.CNO IN (SELECT  sc.CNO FROM sc WHERE sc.SNO = 01)
 GROUP BY sc.SNO
 HAVING COUNT(sc.CNO) = (SELECT COUNT(*) FROM sc WHERE sc.SNO = 01)
