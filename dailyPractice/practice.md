@@ -505,6 +505,51 @@ where student.SNO = sc1.SNO and student.SNO <> sc2.SNO and sc1.CNO = 01 and sc2.
 
 
 
+0515
+
+```sql
+#11、查询没有学全所有课程的同学的信息
+
+select student.*
+from student,sc
+where student.SNO = sc.SNO
+group by sc.SNO
+having count(sc.CNO) < (select count(1) from course)
+
+#12、查询至少有一门课与学号为"01"的同学所学相同的同学的信息
+
+select distinct student.*
+from student, sc
+where student.SNO = sc.SNO
+and sc.SNO <> 01 and sc.CNO in (select sc.CNO from sc where sc.SNO = 01)
+
+#13、查询和"01"号的同学学习的课程完全相同的其他同学的信息
+
+select student.*
+from student, sc
+where student.SNO = sc.SNO
+and sc.SNO <> 01 and sc.CNO in (select sc.CNO from sc where sc.SNO = 01)
+group by sc.SNO
+having count(sc.CNO) = (select count(1) from sc where sc.SNO = 01)
+
+#14、查询没学过"张三"老师讲授的任一门课程的学生姓名
+
+select student.SNAME
+from student
+where student.SNO not in
+(select distinct sc.SNO from sc, course, teacher
+where sc.CNO = course.CNO and course.TNO = teacher.TNO and teacher.TNAME = '张三')
+
+#15、查询两门及其以上不及格课程的同学的学号，姓名及其平均成绩
+
+select student.SNO, student.SNAME, avg(sc.SCORE)
+from student, sc
+where student.SNO = sc.SNO
+group by sc.SNO
+having sum(case when sc.SCORE < 60 then 1 else 0 end) >= 2
+
+```
+
 
 
 
