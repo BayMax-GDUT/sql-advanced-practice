@@ -199,13 +199,6 @@ group by sc.CNO
 
 #24、查询学生平均成绩及其名次
 
-select student.SNO, student.SNAME, avg(s.SCORE), (select count(1) + 1 from sc sc1 group by sc1.SNO having avg(sc1.SCORE) > avg(s.SCORE)) as rank
-from student
-join sc s on student.SNO = s.SNO
-group by s.SNO
-order by rank
-
-
 SELECT A.SNO,A.AVG,COUNT(*) '名次'
 FROM (SELECT SNO,AVG(SCORE) AVG FROM SC GROUP BY SNO) A
 INNER JOIN (SELECT SNO,AVG(SCORE) AVG FROM SC GROUP BY SNO) B
@@ -592,6 +585,49 @@ order by sum(sc.SCORE) desc
 ```
 
 
+
+0518
+
+```sql
+#21、查询不同老师所教不同课程平均分从高到低显示
+
+select course.TNO, avg(sc.SCORE)
+from sc, course
+where sc.CNO = course.CNO
+group by sc.CNO
+order by avg(sc.SCORE) desc
+
+#22、查询所有课程的成绩第2名到第3名的学生信息及该课程成绩
+
+select student.*, sc.SCORE, (select count(1) + 1 from sc sc1 where sc1.CNO = sc.CNO and sc1.SCORE > sc.SCORE) 'rank'
+from student, sc
+where student.SNO = sc.SNO
+and rank in (2, 3)
+
+#23、统计各科成绩各分数段人数：课程编号,课程名称,[100-85],[85-70],[70-60],[0-60]及所占百分比
+
+select sc.CNO, course.CNAME, sum(case when sc.SCORE >= 85 then 1 else 0 end) / count(sc.SNO) '[100-85]', sum(case when sc.SCORE >= 70 and sc.SCORE < 85 then 1 else 0 end) / count(sc.SNO) '[85-70]', sum(case when sc.SCORE >= 60 and sc.SCORE < 70 then 1 else 0 end) / count(sc.SNO) '[70-60]', sum(case when sc.SCORE < 60 then 1 else 0 end) / count(sc.SNO) '[0-60]'
+from sc, course
+where sc.CNO = course.CNO
+group by sc.CNO
+
+#24、查询学生平均成绩及其名次
+
+SELECT A.SNO, A.AVG, COUNT(*) '名次'
+FROM (SELECT SNO, AVG(SCORE) AVG FROM sc GROUP BY sc.SNO) A
+JOIN (SELECT SNO, AVG(SCORE) AVG FROM sc GROUP BY sc.SNO) B
+ON A.AVG < B.AVG
+GROUP BY A.SNO
+ORDER BY A.AVG desc
+
+#25、查询各科成绩前三名的记录
+
+select sc.SNO, sc.CNO, sc.SCORE
+from sc
+where (select count(1) + 1 from sc sc1 where sc.CNO = sc1.CNO) in (1,2,3)
+order by sc.CNO, sc.SCORE
+
+```
 
 
 
