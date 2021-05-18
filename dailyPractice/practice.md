@@ -631,6 +631,43 @@ order by sc.CNO, sc.SCORE
 
 
 
+0518
+
+```sql
+#26、查询每门课程被选修的学生数
+
+select sc.CNO, count(sc.SNO)
+from sc
+group by sc.CNO
+
+#27、查询出只有两门课程的全部学生的学号和姓名
+
+select student.SNO,student.SNAME
+from student, sc
+where student.SNO = sc.SNO
+group by sc.SNO
+having count(sc.CNO) = 2
+
+#28、查询男生、女生人数
+
+select sum(case when student.SEX = '男' then 1 else 0 end) '男', sum(case when student.SEX = '女' then 1 else 0 end) '女'
+from student
+
+#29、查询名字中含有"风"字的学生信息
+
+select student.*
+from student
+where student.SNAME like '%风%'
+
+#30、查询同名同性学生名单，并统计同名人数
+
+select SNAME, count(1)
+from student
+group by SNAME
+having count(1) > 1
+
+```
+
 
 
 
