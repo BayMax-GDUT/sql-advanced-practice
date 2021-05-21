@@ -463,13 +463,18 @@ GROUP BY sc.CNO
 
 40、查询选修"张三"老师所授课程的学生中，成绩最高的学生信息及其成绩
 
-```
+```sql
 SELECT student.`*`, sc.SCORE
 FROM student, sc, course, teacher
 WHERE student.SNO = sc.SNO and sc.CNO = course.CNO and course.TNO = teacher.TNO
 AND teacher.TNAME = '张三'
 ORDER BY sc.SCORE DESC
 LIMIT 1
+
+select student.*, sc.CNO, max(sc.SCORE)
+from student, sc, course, teacher
+where student.SNO = sc.SNO and sc.CNO = course.CNO and course.TNO = teacher.TNO
+and teacher.TNAME = '张三'
 ```
 
 

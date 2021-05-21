@@ -711,6 +711,43 @@ where student.SNO = sc.SNO and sc.CNO = course.CNO
 
 
 
+0521
+
+```sql
+#36、查询任何一门课程成绩在70分以上的姓名、课程名称和分数
+
+select student.SNAME, course.CNAME, sc.SCORE
+from student, course, sc
+where student.SNO = sc.SNO and course.CNO = sc.CNO
+and sc.SCORE >= 70
+
+#37、查询不及格的课程
+
+select SNO, CNO, SCORE
+from sc
+where SCORE < 60
+
+#38、查询课程编号为01且课程成绩在80分以上的学生的学号和姓名
+
+select student.SNO, student.SNAME
+from student, sc
+where student.SNO = sc.SNO and sc.CNO = 01 and sc.SCORE >= 80
+
+#39、求每门课程的学生人数
+
+select sc.CNO, count(1)
+from sc
+group by sc.CNO
+
+#40、查询选修"张三"老师所授课程的学生中，成绩最高的学生信息及其成绩
+
+select student.*, sc.CNO, max(sc.SCORE)
+from student, sc, course, teacher
+where student.SNO = sc.SNO and sc.CNO = course.CNO and course.TNO = teacher.TNO
+and teacher.TNAME = '张三'
+
+```
+
 
 
 
