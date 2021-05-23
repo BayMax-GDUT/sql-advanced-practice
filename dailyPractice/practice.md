@@ -780,7 +780,7 @@ from sc
 group by sc.SNO
 having count(sc.CNO) >= 2
 
-345、查询选修了全部课程的学生信息
+#45、查询选修了全部课程的学生信息
 
 select student.*
 from sc, student where sc.SNO = student.SNO
@@ -790,6 +790,36 @@ having count(sc.CNO) = (select count(1) from course)
 ```
 
 
+
+0523
+
+```sql
+#46、查询各学生的年龄
+
+select student.SNO, (date_format(now(), '%Y') - date_format(student.SAGE, '%Y')) '年龄'
+from student
+
+#47、查询本周过生日的学生
+
+
+
+#48、查询下周过生日的学生
+
+
+
+#49、查询本月过生日的学生
+
+select student.*
+from student
+where date_format(student.SAGE, '%m') = date_format(now, '%m')
+
+#50、查询下月过生日的学生
+
+select student.*
+from student
+where date_format(student.SAGE, '%m') = date_format(now, '%m') + 1
+
+```
 
 
 
