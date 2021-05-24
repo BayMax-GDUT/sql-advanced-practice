@@ -21,7 +21,6 @@ JOIN sc sc2 ON sc2.SNO = student.SNO
 WHERE sc1.CNO = '01'
 AND sc2.CNO = '02'
 AND sc1.SCORE < sc2.SCORE
-GROUP BY student.SNO
 ```
 
 
