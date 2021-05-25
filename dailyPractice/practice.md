@@ -336,7 +336,6 @@ join teacher on course.TNO = teacher.TNO
 where teacher.TNAME = '张三'
 order by sc.SCORE desc
 limit 1
-
 ```
 
 
@@ -378,7 +377,6 @@ from student
 join sc on student.SNO = sc.SNO
 group by sc.SNO
 having count(sc.CNO) = (select count(1) from course)
-
 ```
 
 
@@ -410,7 +408,6 @@ where date_format(SAGE, "%m") = date_format(now(), "%m")
 select student.* 
 from student
 where date_format(SAGE, "%m") = date_format(now(), "%m") + 1
-
 ```
 
 
@@ -493,7 +490,6 @@ where student.SNO = sc1.SNO and student.SNO = sc2.SNO and sc1.CNO = 01 and sc2.C
 select student.*
 from student, sc sc1, sc sc2
 where student.SNO = sc1.SNO and student.SNO <> sc2.SNO and sc1.CNO = 01 and sc2.CNO = 02
-
 ```
 
 
@@ -540,7 +536,6 @@ from student, sc
 where student.SNO = sc.SNO
 group by sc.SNO
 having sum(case when sc.SCORE < 60 then 1 else 0 end) >= 2
-
 ```
 
 
@@ -581,7 +576,6 @@ select sc.SNO, sum(sc.SCORE)
 from sc
 group by sc.SNO
 order by sum(sc.SCORE) desc
-
 ```
 
 
@@ -626,7 +620,6 @@ select sc.SNO, sc.CNO, sc.SCORE
 from sc
 where (select count(1) + 1 from sc sc1 where sc.CNO = sc1.CNO) in (1,2,3)
 order by sc.CNO, sc.SCORE
-
 ```
 
 
@@ -665,7 +658,6 @@ select SNAME, count(1)
 from student
 group by SNAME
 having count(1) > 1
-
 ```
 
 
@@ -706,7 +698,6 @@ and course.CNAME = '数学' and sc.SCORE < 60
 select student.SNAME, course.CNAME, sc.SCORE
 from student, sc, course
 where student.SNO = sc.SNO and sc.CNO = course.CNO
-
 ```
 
 
@@ -745,7 +736,6 @@ select student.*, sc.CNO, max(sc.SCORE)
 from student, sc, course, teacher
 where student.SNO = sc.SNO and sc.CNO = course.CNO and course.TNO = teacher.TNO
 and teacher.TNAME = '张三'
-
 ```
 
 
@@ -786,7 +776,6 @@ select student.*
 from sc, student where sc.SNO = student.SNO
 group by sc.SNO
 having count(sc.CNO) = (select count(1) from course)
-
 ```
 
 
@@ -818,7 +807,6 @@ where date_format(student.SAGE, '%m') = date_format(now, '%m')
 select student.*
 from student
 where date_format(student.SAGE, '%m') = date_format(now, '%m') + 1
-
 ```
 
 
@@ -862,8 +850,63 @@ select student.SNO, student.SNAME, count(sc.CNO), sum(sc.SCORE)
 from student, sc
 where student.SNO = sc.SNO
 group by sc.SNO
-
 ```
+
+
+
+0525
+
+```sql
+#6、查询"李"姓老师的数量
+
+select count(*)
+from teacher
+where TNAME like '李%'
+
+#7、查询学过"张三"老师授课的同学的信息
+
+select student.*
+from student, sc, course, teacher
+where student.SNO = sc.SNO and sc.CNO = course.CNO and course.TNO = teacher.TNO
+and teacher.TNAME = '张三'
+
+#8、查询没学过"张三"老师授课的同学的信息
+
+select student.*
+from student
+where student.SNO not in (select sc.SNO
+from sc, course, teacher
+where student.SNO = sc.SNO and sc.CNO = course.CNO and course.TNO = teacher.TNO
+and teacher.TNAME = '张三')
+
+#9、查询学过编号为"01"并且也学过编号为"02"的课程的同学的信息
+
+select student.*
+from student, sc sc1, sc sc2
+where student.SNO = sc1.SNO and student.SNO = sc2.SNO
+and sc1.CNO = 01 and sc2.CNO = 02
+
+#10、查询学过编号为"01"但是没有学过编号为"02"的课程的同学的信息
+
+select student.*
+from student, sc sc1
+where student.SNO = sc1.SNO and sc1.CNO = 01
+and student.SNO not in (select sc2.SNO from sc sc2 where sc2.CNO = 02)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -105,12 +105,10 @@ WHERE sc1.CNO = '01' and sc2.CNO = '02'
 10、查询学过编号为"01"但是没有学过编号为"02"的课程的同学的信息
 
 ```sql
-SELECT distinct student2.`*` FROM student student2
-JOIN sc sc1 ON student2.SNO = sc1.SNO
-WHERE sc1.CNO = '01' AND student2.SNO NOT IN (
-SELECT student1.SNO FROM student student1
-JOIN sc sc2 ON sc2.SNO = student1.SNO AND sc2.CNO = '02'
-)
+select student.*
+from student, sc sc1
+where student.SNO = sc1.SNO and sc1.CNO = 01
+and student.SNO not in (select sc2.SNO from sc sc2 where sc2.CNO = 02)
 ```
 
 
