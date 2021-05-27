@@ -149,6 +149,7 @@ select * from student where SNO in (
 SELECT * FROM student
 JOIN sc ON student.SNO = sc.SNO
 WHERE sc.CNO IN (SELECT  sc.CNO FROM sc WHERE sc.SNO = 01)
+and sc.SNO <> 01
 GROUP BY sc.SNO
 HAVING COUNT(sc.CNO) = (SELECT COUNT(*) FROM sc WHERE sc.SNO = 01)
 
@@ -156,6 +157,7 @@ SELECT * FROM student WHERE SNO IN (
 SELECT student.SNO FROM student
 JOIN sc ON student.SNO = sc.SNO
 WHERE sc.CNO IN (SELECT  sc.CNO FROM sc WHERE sc.SNO = 01)
+and sc.SNO <> 01
 GROUP BY sc.SNO
 HAVING COUNT(sc.CNO) = (SELECT COUNT(*) FROM sc WHERE sc.SNO = 01)
 )
