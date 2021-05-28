@@ -245,7 +245,7 @@ ORDER BY a.CNO, a.SCORE desc
 20、查询学生的总成绩并进行排名
 
 ```sql
-select sc.SNO
+select sc.SNO, sum(sc.SCORE)
 from sc
 group by SNO
 order by sum(sc.SCORE) desc 

@@ -942,6 +942,44 @@ having sum(case when sc.SCORE < 60 then 1 else 0 end) >= 2
 
 
 
+0528
+
+```sql
+#16、检索"01"课程分数小于60，按分数降序排列的学生信息
+
+select student.*
+from student, sc
+where student.SNO = sc.SNO and sc.SCORE < 60
+order by sc.SCORE desc
+
+#17、按平均成绩从高到低显示所有学生的所有课程的成绩以及平均成绩
+
+select sc.SNO, group_concat(sc.CNO), group_concat(sc.SCORE), avg(sc.SCORE)
+from sc
+group by sc,SNO
+order by avg(sc.SCORE) desc
+
+#18、查询各科成绩最高分、最低分和平均分：以如下形式显示：课程ID，课程name，最高分，最低分，平均分，及格率，中等率，优良率，优秀率（及格为>=60，中等为：70-80，优良为：80-90，优秀为：>=90）
+
+select sc.CNO, course.CNAME, max(sc.SCORE), min(sc.SCORE), avg(sc.SCORE), sum(case when sc.SCORE >= 60 and sc.SCORE < 70 then 1 else 0 end) / count(sc.CNO) '及格率', sum(case when sc.SCORE >= 70 and sc.SCORE < 80 then 1 else 0 end) / count(sc.CNO) '中等率', sum(case when sc.SCORE >= 80 and sc.SCORE < 90 then 1 else 0 end) / count(sc.CNO) '优良率', sum(case when sc.SCORE >= 90 then 1 else 0 end) / count(sc.CNO) '优秀率'
+from sc, course
+where sc.CNO = course.CNO
+group by sc.CNO
+
+#19、按各科成绩进行排序，并显示排名
+
+select sc.CNO, sc.SNO, sc.SCORE, (select count(1) + 1 from sc sc1 where sc1.CNO = sc.CNO and sc1.SCORE > sc.SCORE) 'rank'
+from sc
+order by sc.CNO, sc.SCORE desc
+
+#20、查询学生的总成绩并进行排名
+
+select sc.SNO, sum(sc.SCORE)
+from sc
+group by sc.CNO
+order by sum(sc.SCORE)
+```
+
 
 
 
