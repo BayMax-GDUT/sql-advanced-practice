@@ -982,6 +982,55 @@ order by sum(sc.SCORE)
 
 
 
+0530
+
+```sql
+#21、查询不同老师所教不同课程平均分从高到低显示
+
+select course.TNO, sc.CNO, avg(sc.SCORE)
+from course, sc
+where course.CNO = sc.CNO
+group by sc.CNO
+order by avg(sc.SCORE) desc
+
+
+#22、查询所有课程的成绩第2名到第3名的学生信息及该课程成绩
+
+select student.*, sc.CNO, sc.SCORE
+from student, sc
+where student.SNO = sc.SNO
+and (select count(1) + 1 from sc sc1 where sc1.CNO = sc.CNO and sc1.SCORE > sc.SCORE) in (2, 3)
+
+#23、统计各科成绩各分数段人数：课程编号,课程名称,[100-85],[85-70],[70-60],[0-60]及所占百分比
+
+select sc.CNO, course.CNAME, 
+sum(case when sc.SCORE >= 85 then 1 else 0 end) / count(1) '[100-85]',
+sum(case when sc.SCORE >= 70 and sc.SCORE < 85 then 1 else 0 end) / count(1) '[85-70]',
+sum(case when sc.SCORE >= 60 and sc.SCORE < 70 then 1 else 0 end) / count(1) '70-60',
+sum(case when sc.SCORE < 60 then 1 else 0 end) / count(1) '[0-60]'
+from sc, course
+where sc.CNO = course.CNO
+group by sc.CNO
+
+#24、查询学生平均成绩及其名次
+
+select A.SNO, A.AVG, count(1) 'rank'
+from (select SNO, avg(sc.SCORE) AVG from sc sc1 group by sc1.CNO) A,
+(select SNO, avg(sc.SCORE) AVG from sc sc2 group by sc2.CNO) B
+where A.AVG <= B.AVG
+group by A.SNO
+order by A.AVG desc
+
+#25、查询各科成绩前三名的记录
+
+select sc.CNO, sc.SNO
+from sc
+where (select count(1) + 1 from sc sc1 where sc1.CNO = sc.CNO and sc1.SCORE > sc.SCORE) <= 3
+order by sc.CNO, sc.SCORE desc
+```
+
+
+
 
 
 
