@@ -1070,6 +1070,44 @@ having count(1) > 1
 
 
 
+0604
+
+```sql
+#31、查询1990年出生的学生名单
+
+select student.SNO, student.SNAME
+from student
+where date_format(student.SAGE, '%Y') = '1990'
+
+#32、查询每门课程的平均成绩，结果按平均成绩降序排列，平均成绩相同时，按课程编号升序排列
+
+select sc.CNO, avg(sc.SCORE)
+from sc
+group by sc.CNO
+order by avg(sc.SCORE) desc, sc.CNO
+
+#33、查询平均成绩大于等于85的所有学生的学号、姓名和平均成绩
+
+select student.SNO, student.SNAME, avg(sc.SCORE)
+from student, sc
+where student.SNO = sc.SNO
+group by sc.SNO
+having avg(sc.SCORE) >= 85
+
+#34、查询课程名称为"数学"，且分数低于60的学生姓名和分数
+
+select student.SNAME, sc.SCORE
+from student, sc, course
+where student.SNO = sc.SNO and sc.CNO = course.CNO
+and course.CNAME = '数学' and sc.SCORE < 60
+
+#35、查询所有学生的课程及分数情况
+
+select student.SNO, sc.CNO, sc.SCORE
+from student, sc
+where student.SNO = sc.SNO
+```
+
 
 
 
